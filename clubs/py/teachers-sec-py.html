@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Eduventure | Sphere</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link id="favicon" rel="icon">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #7c8cff;
+      --border: rgba(255,255,255,0.45);
+      --card-bg: rgba(249, 250, 251, 0.5);
+      --glow: rgba(124, 140, 255, 0.3);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: radial-gradient(circle at top, #f4f9ffd3, #fbfbfb);
+      color: var(--text);
+      line-height: 1.5;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* --- Back Button --- */
+    .back {
+      position: fixed;
+      top: 25px;
+      left: 25px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: 1px solid var(--border);
+    }
+
+    .back img {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      pointer-events: none; /* Prevent Dragging */
+      -webkit-user-drag: none;
+    }
+
+    .back:hover { transform: scale(1.1); }
+    .back:active { transform: scale(0.9); }
+
+    /* --- Glassmorphism --- */
+    .glass {
+      background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
+      backdrop-filter: blur(22px) saturate(140%);
+      -webkit-backdrop-filter: blur(22px) saturate(140%);
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+      border-radius: 30px;
+    }
+
+    .top {
+      padding: 50px 0 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .icon-top {
+      height: 180px;
+      width: 180px;
+      border-radius: 50%;
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      object-fit: cover;
+      border: 6px solid white;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.1), 0 0 0 10px rgba(124, 140, 255, 0.05);
+      cursor: pointer;
+      pointer-events: none; /* Prevent Dragging */
+      -webkit-user-drag: none;
+    }
+
+    .section-title {
+      text-align: center;
+      margin: 20px 0 40px;
+      font-size: clamp(32px, 5vw, 48px);
+      font-weight: 800;
+      background: linear-gradient(to right, #4f46e5, #7c8cff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .features {
+      max-width: 1100px;
+      margin: 0 auto 80px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      padding: 0 20px;
+      align-items: start;
+    }
+
+    .card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .card-img-container {
+      width: 100%;
+      height: 350px;
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 20px;
+      background: var(--card-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover; 
+      transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));
+      pointer-events: none; /* Prevent Dragging */
+      -webkit-user-drag: none;
+    }
+
+    .card:hover img { 
+      transform: scale(1.07) translateY(-5px); 
+    }
+
+    .card h3 { margin-bottom: 10px; font-size: 22px; color: var(--text); }
+.description-container {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .card p { 
+      color: var(--muted); 
+      font-size: 15px; 
+      white-space: pre-line;
+      overflow: hidden;
+      transition: max-height 0.4s ease;
+    }
+
+    .card p.collapsed {
+      max-height: 100px;
+      -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+      mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    }
+
+    .card p.expanded {
+      max-height: 1000px;
+      mask-image: none;
+      -webkit-mask-image: none;
+    }
+
+    .read-more-btn {
+      background: rgba(124, 140, 255, 0.1);
+      border: none;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      padding: 6px 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      transition: all 0.3s ease;
+    }
+
+    .read-more-btn:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    .card-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .card a { 
+      font-weight: 600; 
+      color: var(--primary); 
+      text-decoration: none;
+      padding: 12px 24px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      width: fit-content;
+      transition: all 0.3s ease;
+    }
+
+    .card a:hover {
+      background: var(--primary);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(124, 140, 255, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <a class="back" href="/index.html">
+    <img src="https://cdn-icons-png.flaticon.com/512/271/271220.png" alt="go back" draggable="false">
+  </a>
+
+  <header class="top">
+    <div style="pointer-events: auto;">
+       <img src="https://camo.githubusercontent.com/c73a8fdacf1b62ff917547d2727b082ffec10a9d588d175f5217b2ebc090797f/68747470733a2f2f6c6f676f732d646f776e6c6f61642e636f6d2f77702d636f6e74656e742f75706c6f6164732f323031362f31302f507974686f6e5f6c6f676f5f69636f6e2e706e67" class="icon-top" id="main-logo" alt="English" draggable="false">
+    </div>
+  </header>
+
+  <h1 class="section-title">Python Mentors</h1>
+
+  <main class="features">
+    <div class="card glass">
+      <div class="card-img-container">
+        <img src="/Elements/py techers/Sunnat.jpg" alt="Sunnat Arslonov">
+      </div>
+      <h3>Sunnat Arslonov</h3>
+      
+      <div class="description-container">
+        <p class="collapsed" id="desc-1">
+          <br> Assalomu alaykum hammaga!<br>
+          <br> Men – <b>Sunnatjon Arslonov</b>
+          <br> 📘 <b>Tajriba va bilimlarim:</b>
+          <br> • 2 yil davomida Front-end va Back-end sohalarida tajriba to’plaganman.<br>
+          <br> • Back-end: Python, PostgreSQL, Django (Framework).<br>
+          <br> • Front-end: Html, Css, Bootstrap.<br>
+          <br> 🎯 <b>Maqsad:</b> O’rganishni oson, tez va samarali olib borish.<br>
+          <br> Savollar bo'lsa: <b><a href="https://t.me/mohirdev22">@mohirdev22</a></b>
+        </p>
+        <button class="read-more-btn" onclick="toggleReadMore('desc-1', this)">Read More</button>
+      </div>
+
+      <div class="card-footer">
+        <a href="#">Explore more</a>
+      </div>
+    </div>
+
+    <div class="card glass">
+      <div class="card-img-container">
+        <img src="/Elements/py techers/Musinov.jpg" alt="Muhammadyor Musinov">
+      </div>
+      <h3>Muhammadyor Musinov</h3>
+      
+      <div class="description-container">
+        <p class="collapsed" id="desc-2">
+          <br> Assalomu alaykum hammaga!<br>
+          <br> Men – <b>Muhammadyor Musinov</b>
+          <br> 📘 <b>Tajriba va bilimlarim:</b>
+          <br> • Python Back-end mutaxassisi.<br>
+          <br> • Ma'lumotlar bazasi va API tizimlari bilan ishlash tajribasi.<br>
+          <br> • Real loyihalar va jamoaviy ishlash ko'nikmasi.<br>
+          <br> 🎯 <b>Maqsad:</b> O’rganishni oson va samarali qilish.<br>
+          <br> Savollar bo'lsa: <b><a href="https://t.me/mohirdev22">@mohirdev22</a></b>
+        </p>
+        <button class="read-more-btn" onclick="toggleReadMore('desc-2', this)">Read More</button>
+      </div>
+
+      <div class="card-footer">
+        <a href="#">Explore Course</a>
+      </div>
+    </div>
+  </main>
+
+<script>
+  function toggleReadMore(id, btn) {
+    const text = document.getElementById(id);
+    if (text.classList.contains('collapsed')) {
+      text.classList.remove('collapsed');
+      text.classList.add('expanded');
+      btn.innerText = 'Show Less';
+    } else {
+      text.classList.remove('expanded');
+      text.classList.add('collapsed');
+      btn.innerText = 'Read More';
+    }
+  }
+
+  const allCards = document.querySelectorAll('.card');
+
+  allCards.forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      card.style.transform = "translateY(-15px)";
+    });
+    card.addEventListener('mouseleave', () => {
+      card.style.transform = "translateY(0)";
+    });
+  });
+
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = "1";
+        entry.target.style.transform = "translateY(0)";
+      }
+    });
+  }, { threshold: 0.1 });
+
+  allCards.forEach(el => {
+    el.style.opacity = "0";
+    el.style.transform = "translateY(30px)";
+    el.style.transition = "all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)";
+    revealObserver.observe(el);
+  });
+</script>
+
+</body>
+</html>
